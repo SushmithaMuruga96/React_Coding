@@ -1,0 +1,38 @@
+.login {
+  text-align: center;
+  margin: 2rem 0rem;
+  font-size: 20px;
+  font-weight: 600;
+}
+.form {
+  width: 350px;
+  margin: 0 auto;
+  /* padding: 0.5rem; */
+  border: 1px solid grey;
+  border-radius: 5px;
+  text-align: center;
+  background-color: antiquewhite;
+}
+
+.input {
+  border: 1px solid grey;
+  border-radius: 3px;
+  padding: 1rem;
+  margin: 1rem;
+  width: 90%;
+}
+
+.checkbox {
+  display: flex;
+  gap: 10px;
+  margin-left: 1rem;
+  /* justify-content: center; */
+}
+
+.submit {
+  border: 2px solid grey;
+  border-radius: 3px;
+  padding: 0.5rem;
+  margin: 1rem;
+  width: 100px;
+}
