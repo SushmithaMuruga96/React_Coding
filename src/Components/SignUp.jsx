@@ -1,18 +1,22 @@
 import React, { useState } from "react";
-import "./signup.css";
+import "../Styles/signup.css";
+import { useDispatch } from "react-redux";
+import { updateSignUp } from "../Redux/Reducers/SignupSlice";
 
-function UserSignIn() {
+function SignUp({ afterSignUp }) {
   const [userInfo, setUserInfo] = useState({
-    name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
+  const dispatch = useDispatch();
+
+  const [showPwd, setShowPwd] = useState(false);
+
   const handleInputChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    console.log(name, value);
     setUserInfo({
       ...userInfo,
       [name]: value,
@@ -21,14 +25,19 @@ function UserSignIn() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    alert("successfully updated", userInfo);
-    console.log(userInfo, "userInfo");
+    if (userInfo.confirmPassword !== userInfo.password) {
+      alert("Password Mismatch");
+    } else {
+      dispatch(updateSignUp(userInfo));
+      alert("successfully Submitted", userInfo);
+      afterSignUp();
+    }
   };
   return (
     <>
-      <h1 className="login"> Signup Form</h1>
+      <h1 className="login"> Create New Account</h1>
       <form className="form" onSubmit={handleSubmit}>
-        <input
+        {/* <input
           className="input"
           type="text"
           name="name"
@@ -36,7 +45,7 @@ function UserSignIn() {
           required
           placeholder="User Name"
           onChange={handleInputChange}
-        ></input>
+        ></input> */}
         <input
           className="input"
           type="email"
@@ -48,7 +57,7 @@ function UserSignIn() {
         ></input>
         <input
           className="input"
-          type="password"
+          type={showPwd ? "text" : "password"}
           name="password"
           value={userInfo.password}
           required
@@ -57,7 +66,7 @@ function UserSignIn() {
         ></input>
         <input
           className="input"
-          type="password"
+          type={showPwd ? "text" : "password"}
           name="confirmPassword"
           value={userInfo.confirmPassword}
           required
@@ -65,7 +74,7 @@ function UserSignIn() {
           onChange={handleInputChange}
         ></input>
         <div className="checkbox">
-          <input type="checkbox" />
+          <input type="checkbox" onClick={() => setShowPwd(!showPwd)} />
           <p>show password</p>
         </div>
         <br />
@@ -75,7 +84,7 @@ function UserSignIn() {
         </div> */}
         {/* Captcha */}
         {/* <input className="" type="text" name="captcha" value=""></input> */}
-        <input className="submit" type="submit" value="Signup" />
+        <input className="submit" type="submit" value="SIGN UP" />
         <br />
         {/* <p>Forgot Password?</p> <br />
         <p>Don't have account? Sign up</p> */}
@@ -84,4 +93,4 @@ function UserSignIn() {
   );
 }
 
-export default UserSignIn;
+export default SignUp;
