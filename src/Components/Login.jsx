@@ -2,8 +2,10 @@ import { useState } from "react";
 import SignUp from "./SignUp";
 import { updateLoginInfo } from "../Redux/Reducers/LoginSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showSignUp, setShowSignUp] = useState(false);
   const [loginInfo, setLoginInfo] = useState({
@@ -32,6 +34,7 @@ const Login = () => {
       ) {
         dispatch(updateLoginInfo(loginInfo));
         alert("Login Success");
+        navigate("/home");
       } else if (
         email !== loginInfo.userEmail ||
         password !== loginInfo.userPassword
