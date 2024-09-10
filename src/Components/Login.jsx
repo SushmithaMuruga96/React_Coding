@@ -3,6 +3,7 @@ import SignUp from "./SignUp";
 import { updateLoginInfo } from "../Redux/Reducers/LoginSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -24,28 +25,42 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-
-    if (email !== "" && password !== "") {
-      if (
-        email === loginInfo.userEmail &&
-        password === loginInfo.userPassword
-      ) {
-        dispatch(updateLoginInfo(loginInfo));
-        alert("Login Success");
-        navigate("/home");
-      } else if (
-        email !== loginInfo.userEmail ||
-        password !== loginInfo.userPassword
-      ) {
-        alert("UserName/Password is incorrect");
-      } else {
-        alert("Login Failed");
-      }
-    } else {
-      alert("Not an User");
+    console.log(loginInfo.userEmail, loginInfo.userPassword);
+    try {
+      const response = await axios.post("http://localhost:3001/api/login", {
+        email: loginInfo.userEmail,
+        password: loginInfo.userPassword,
+      });
+      console.log(response);
+      localStorage.setItem("token", response?.data?.token);
+      dispatch(updateLoginInfo(loginInfo));
+      alert("Login Success");
+      navigate("/home");
+    } catch (error) {
+      alert(error.message);
     }
+
+    // if (email !== "" && password !== "") {
+    //   if (
+    //     email === loginInfo.userEmail &&
+    //     password === loginInfo.userPassword
+    //   ) {
+    //     dispatch(updateLoginInfo(loginInfo));
+    //     alert("Login Success");
+    //     navigate("/home");
+    //   } else if (
+    //     email !== loginInfo.userEmail ||
+    //     password !== loginInfo.userPassword
+    //   ) {
+    //     alert("UserName/Password is incorrect");
+    //   } else {
+    //     alert("Login Failed");
+    //   }
+    // } else {
+    //   alert("Not an User");
+    // }
   };
 
   const afterSignUp = () => {
