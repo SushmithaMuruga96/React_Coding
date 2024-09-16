@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../Styles/signup.css";
 import { useDispatch } from "react-redux";
-import { updateSignUp } from "../Redux/Reducers/SignupSlice";
+import { updateSignUp } from "../Redux/Slice/SignupSlice";
 
 function SignUp({ afterSignUp }) {
   const [userInfo, setUserInfo] = useState({
