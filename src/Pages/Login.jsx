@@ -1,6 +1,6 @@
 import { useState } from "react";
-import SignUp from "./SignUp";
-import { updateLoginInfo } from "../Redux/Reducers/LoginSlice";
+import SignUp from "../Components/SignUp";
+import { updateLoginInfo } from "../Redux/Slice/LoginSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
