@@ -1,17 +1,22 @@
 import { Provider } from "react-redux";
-import store from "./Redux/store";
 import ProjectRoutes from "./Router/ProjectRoutes";
+import { store, persistor } from "./Redux/store";
+import { PersistGate } from "redux-persist/integration/react";
+// import TablesAndForms from "./Projects/TablesAndForms";
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
   return (
-    <Provider store={store}>
-      <div>
-        <h1 style={{ textAlign: "center", fontSize: "20px", fontWeight: 500 }}>
-          React Coding
-        </h1>
-        <ProjectRoutes />
-      </div>
-    </Provider>
+    <div>
+      {/* <TablesAndForms /> */}
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <BrowserRouter>
+            <ProjectRoutes />
+          </BrowserRouter>
+        </PersistGate>
+      </Provider>
+    </div>
   );
 }
 
