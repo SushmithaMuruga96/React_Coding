@@ -20,3 +20,30 @@ nav {
 nav a {
   margin-right: 30px;
 }
+
+.mainWrap {
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar {
+  width: 20%;
+  display: block;
+}
+
+.maincontent {
+  width: 80%;
+}
+
+@media (max-width: 600px) {
+  .maincontent {
+    width: 100%;
+  }
+  .sidebar {
+    width: 100%;
+  }
+
+  .mainWrap {
+    display: block;
+  }
+}
