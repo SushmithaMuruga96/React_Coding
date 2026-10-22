@@ -13,14 +13,16 @@ import TodoListWithCheckbox from "../Interview Practise/TodoListWithCheckbox";
 // import { LayoutOne } from "../Components/LayoutOne";
 // import { SimpleLayout } from "../Components/SimpleLayout";
 
-import CountOperator from "../Interview Practise/CountOperator";
+// import CountOperator from "../Interview Practise/CountOperator";
+import SearchComponent2 from "../Interview Practise/SearchComponent2.jsx";
 
 const ProjectRoutes = () => {
   // useUserInactivityHook();
   return (
     <ThemeProvider>
       <NavBar />
-      <CountOperator />
+      <SearchComponent2 />
+      {/* <CountOperator /> */}
       {/* <TodoListWithCheckbox /> */}
       {/* <Routes>
         <Route path="/" element={<Home />} />
