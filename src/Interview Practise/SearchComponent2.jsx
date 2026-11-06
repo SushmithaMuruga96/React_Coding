@@ -1,35 +1,58 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-//fetch dummy product api
+// fetch dummy product api
 // create an search input
 // filter products in search auto complete
 // shows filtered products as listitem
 // onclick of item show the product details
 
 const SearchComponent = () => {
-  const [searchText, setSearchText] = useState("");
-  const [filterSearchByName, setFilterSearchByName] = useState([]);
-  const [fruits, setFruits] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  const updateSearchResults = (e) => {
-    const { value } = e.target;
-    setSearchText(value);
-    const searchByValue = fruits.filter((x) =>
-      x.title.toLowerCase().includes(value.toLowerCase()),
-    );
-    setFilterSearchByName(searchByValue);
+  const onChangeSearchHandler = (e) => {
+    console.log("e.target.value", e.target.value);
+    setSearchInput(e.target.value);
+    setShowDropdown(true);
   };
 
-  const handleOnClickItems = (product) => {
-    console.log("product", product);
-    setSearchResults([product]);
-    setSearchText("");
+  const normalizedProducts = useMemo(() => {
+    console.log("Normalizing Products");
+    return products.map((product) => ({
+      ...product,
+      normalizedTitle: product.title.toLowerCase(),
+    }));
+  }, [products]);
+
+  const filteredProduct = useMemo(() => {
+    console.log("Filtering Products");
+
+    const query = searchInput.trim().toLowerCase();
+    if (!query) {
+      return [];
+    }
+    return normalizedProducts.filter((product) =>
+      product.normalizedTitle.includes(query),
+    );
+  }, [normalizedProducts, searchInput]);
+
+  const handleSelectedProduct = (product) => {
+    setSelectedProduct(product);
+    setSearchInput("");
+    setShowDropdown(false);
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput("");
+    setSelectedProduct(null);
+    setShowDropdown(false);
   };
 
   useEffect(() => {
     console.log("Calling APi");
-    const fetchFruits = async () => {
+    const fetchProducts = async () => {
       try {
         const response = await fetch(
           "https://dummyjson.com/products/category/groceries",
@@ -42,19 +65,13 @@ const SearchComponent = () => {
         const data = await response.json();
         console.log(data, "data");
 
-        setFruits(data?.products);
+        setProducts(data?.products ?? []);
       } catch (error) {
         console.log(error.message);
-      } finally {
       }
     };
-    fetchFruits();
+    fetchProducts();
   }, []);
-  //create inputbox and search button
-  //show list of items that matches the input
-  //onClick of search button sent an API call and display list
-
-  console.log(searchResults, "searchResults");
 
   return (
     <div style={{ textAlign: "center", padding: "10px" }}>
@@ -68,26 +85,42 @@ const SearchComponent = () => {
         type="text"
         name="search"
         placeholder="search for products..."
-        value={searchText}
-        onChange={updateSearchResults}
+        value={searchInput}
+        onChange={onChangeSearchHandler}
       />
+      <button
+        style={{
+          borderRadius: "5px",
+          padding: "13px",
+          margin: "10px",
+          width: "40px",
+          cursor: "pointer",
+          backgroundColor: "green",
+          color: "white",
+        }}
+        onClick={handleClearSearch}
+      >
+        {" "}
+        X
+      </button>
 
-      {searchResults.length == 0 && (
-        <ul>
-          {filterSearchByName.map((x) => (
-            <li key={x.id}>
-              <input
-                type="button"
-                onClick={() => handleOnClickItems(x)}
-                value={` ${x.title} in  ${x.tags[0]}`}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
+      {showDropdown &&
+        searchInput.trim() &&
+        (filteredProduct.length > 0 ? (
+          filteredProduct.map((product) => (
+            <div
+              key={product.id}
+              onClick={() => handleSelectedProduct(product)}
+            >
+              {product.title}
+            </div>
+          ))
+        ) : (
+          <p>No Products Found</p>
+        ))}
 
-      {searchResults?.map((product) => (
-        <div key={product.id}>
+      {selectedProduct && (
+        <div key={selectedProduct.id}>
           <p>Search Results: </p>
 
           <div
@@ -101,20 +134,20 @@ const SearchComponent = () => {
             }}
           >
             <img
-              src={product.images[0]}
+              src={selectedProduct.images[0]}
               alt=""
               height={250}
               width={250}
               style={{ objectFit: "contain", borderBottom: "1px solid grey" }}
             />
             <h3>
-              {`${product.title} $: ${product.price}`}{" "}
-              <span>{`Rating: ${product.rating}`}</span>
+              {`${selectedProduct.title} $: ${selectedProduct.price}`}{" "}
+              <span>{`Rating: ${selectedProduct.rating}`}</span>
             </h3>
-            <p>{product.description}</p>
+            <p>{selectedProduct.description}</p>
           </div>
         </div>
-      ))}
+      )}
     </div>
   );
 };
