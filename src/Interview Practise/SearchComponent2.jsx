@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
+import "./Search.css";
 
 // fetch dummy product api
 // create an search input
@@ -7,10 +8,12 @@ import { useEffect, useMemo, useState } from "react";
 // onclick of item show the product details
 
 const SearchComponent = () => {
-  const [searchInput, setSearchInput] = useState("");
   const [products, setProducts] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const listboxId = useId();
+  const [activeIndex, setActiveIndex] = useState(-1);
 
   const onChangeSearchHandler = (e) => {
     console.log("e.target.value", e.target.value);
@@ -26,7 +29,7 @@ const SearchComponent = () => {
     }));
   }, [products]);
 
-  const filteredProduct = useMemo(() => {
+  const filteredProducts = useMemo(() => {
     console.log("Filtering Products");
 
     const query = searchInput.trim().toLowerCase();
@@ -49,6 +52,57 @@ const SearchComponent = () => {
     setSelectedProduct(null);
     setShowDropdown(false);
   };
+  // const handleKeyDown = (e) => {
+  //   if (!filteredProducts.length) {
+  //     if (e.key === "Escape") {
+  //       setShowDropdown(false);
+  //     }
+  //     return;
+  //   }
+
+  //   switch (e.key) {
+  //     case "ArrowDown":
+  //       e.preventDefault();
+  //       setShowDropdown(true);
+  //       setActiveIndex((prev) =>
+  //         prev >= filteredProducts.length - 1 ? 0 : prev + 1,
+  //       );
+  //       break;
+
+  //     case "ArrowUp":
+  //       e.preventDefault();
+  //       setShowDropdown(true);
+  //       setActiveIndex((prev) =>
+  //         prev <= 0 ? filteredProducts.length - 1 : prev - 1,
+  //       );
+  //       break;
+
+  //     case "Enter":
+  //       if (showDropdown && activeIndex >= 0) {
+  //         e.preventDefault();
+  //         handleSelectedProduct(filteredProducts[activeIndex]);
+  //       }
+  //       break;
+
+  //     case "Escape":
+  //       setShowDropdown(false);
+  //       setActiveIndex(-1);
+  //       break;
+
+  //     case "Home":
+  //       e.preventDefault();
+  //       setActiveIndex(0);
+  //       break;
+
+  //     case "End":
+  //       e.preventDefault();
+  //       setActiveIndex(filteredProducts.length - 1);
+  //       break;
+
+  //     default:
+  //       break;
+  //   }
+  // };
 
   useEffect(() => {
     console.log("Calling APi");
@@ -74,51 +128,68 @@ const SearchComponent = () => {
   }, []);
 
   return (
-    <div style={{ textAlign: "center", padding: "10px" }}>
-      <input
-        style={{
-          width: "500px",
-          height: "25px",
-          borderRadius: "5px",
-          padding: "10px",
-        }}
-        type="text"
-        name="search"
-        placeholder="search for products..."
-        value={searchInput}
-        onChange={onChangeSearchHandler}
-      />
-      <button
-        style={{
-          borderRadius: "5px",
-          padding: "13px",
-          margin: "10px",
-          width: "40px",
-          cursor: "pointer",
-          backgroundColor: "green",
-          color: "white",
-        }}
-        onClick={handleClearSearch}
+    <>
+      <div
+        className="search-container"
+        style={{ textAlign: "center", padding: "10px" }}
       >
-        {" "}
-        X
-      </button>
+        <input
+          type="text"
+          // name="search"
+          // placeholder="search for products..."
+          value={searchInput}
+          onChange={onChangeSearchHandler}
+          role="combobox"
+          aria-label="Search Products"
+          aria-autocomplete="list"
+          aria-expanded={showDropdown && searchInput.trim().length > 0}
+          aria-controls={listboxId}
+          // aria-activedescendant={
+          //   activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : undefined
+          // }
+          // onKeyDown={handleKeyDown}
+        />
+        {/* <button
+          style={{
+            borderRadius: "5px",
+            padding: "13px",
+            margin: "10px",
+            width: "40px",
+            cursor: "pointer",
+            backgroundColor: "green",
+            color: "white",
+          }}
+          onClick={handleClearSearch}
+        >
+          {" "}
+          X
+        </button> */}
 
-      {showDropdown &&
-        searchInput.trim() &&
-        (filteredProduct.length > 0 ? (
-          filteredProduct.map((product) => (
-            <div
-              key={product.id}
-              onClick={() => handleSelectedProduct(product)}
-            >
-              {product.title}
-            </div>
-          ))
-        ) : (
-          <p>No Products Found</p>
-        ))}
-
+        {showDropdown && searchInput.trim() && (
+          <div id={listboxId} role="listbox" className="dropdown">
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product, index) => (
+                <div
+                  key={product.id}
+                  id={`${listboxId}-option-${index}`}
+                  role="option"
+                  aria-selected={activeIndex === index}
+                  className={activeIndex === index ? "active-option" : ""}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => handleSelectedProduct(product)}
+                >
+                  {product.title}
+                </div>
+              ))
+            ) : (
+              <p role="status" aria-live="polite">
+                No records found
+              </p>
+            )}
+          </div>
+        )}
+      </div>
       {selectedProduct && (
         <div key={selectedProduct.id}>
           <p>Search Results: </p>
@@ -148,7 +219,7 @@ const SearchComponent = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
