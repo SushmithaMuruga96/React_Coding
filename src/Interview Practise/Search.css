@@ -18,6 +18,18 @@ input {
   border: 1px solid #ccc;
 }
 
+.close {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  color: #666;
+}
+
 .dropdown {
   position: absolute;
   top: 100%;
