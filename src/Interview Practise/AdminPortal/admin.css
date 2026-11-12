@@ -1,0 +1,21 @@
+.mainwrapper {
+  width: 500px;
+  border: 1px solid #ccc;
+  text-align: center;
+  margin: 100px auto;
+}
+.label {
+  color: black;
+  padding-bottom: 10px;
+  text-align: left !important;
+}
+.inputset {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px;
+}
+.mainwrapper div input {
+  width: 90%;
+}

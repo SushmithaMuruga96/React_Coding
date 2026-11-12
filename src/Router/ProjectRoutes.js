@@ -15,13 +15,14 @@ import TodoListWithCheckbox from "../Interview Practise/TodoListWithCheckbox";
 
 // import CountOperator from "../Interview Practise/CountOperator";
 import SearchComponent2 from "../Interview Practise/SearchComponent2.jsx";
-
+import Adminapp from "../Interview Practise/AdminPortal/Adminapp.jsx";
 const ProjectRoutes = () => {
   // useUserInactivityHook();
   return (
     <ThemeProvider>
       <NavBar />
-      <SearchComponent2 />
+      <Adminapp />
+      {/* <SearchComponent2 /> */}
       {/* <CountOperator /> */}
       {/* <TodoListWithCheckbox /> */}
       {/* <Routes>
