@@ -17,7 +17,7 @@ function Login({ handleLogin, handleRegister }) {
     const { email, password } = loginData;
 
     if (!email.trim() || !password.trim()) {
-      setError("Email and password reuired");
+      setError("Email and password required");
       return;
     }
     setError("");
