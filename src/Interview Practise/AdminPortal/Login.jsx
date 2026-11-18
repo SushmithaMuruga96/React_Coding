@@ -12,26 +12,52 @@ function Login({ handleLogin, handleRegister }) {
       ...prev,
       [name]: value,
     }));
+    if (error) {
+      setError("");
+    }
   };
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const { email, password } = loginData;
 
     if (!email.trim() || !password.trim()) {
       setError("Email and password required");
       return;
     }
+    let registerData;
+    try {
+      registerData = JSON.parse(localStorage.getItem("register"));
+    } catch {
+      setError("Unable to read registered account. Please register again.");
+      return;
+    }
+    if (!registerData) {
+      setError("No account found, Please register");
+      return;
+    }
+
+    const isEmailValid =
+      registerData?.email.trim().toLowerCase() !== email.trim().toLowerCase();
+    const isPasswordValid = registerData?.password !== password;
+
+    if (isEmailValid || isPasswordValid) {
+      setError("Incorrect Email/Password");
+      return;
+    }
+
     setError("");
     localStorage.setItem("login", JSON.stringify(loginData));
     handleLogin();
   };
   return (
-    <div className="mainwrapper">
+    <form className="mainwrapper" onSubmit={handleSubmit}>
       <h1>Login to an Account</h1>
       <div className="inputset">
         <label htmlFor="email" className="label">
           Email: *{" "}
         </label>
         <input
+          id="email"
           name="email"
           value={loginData?.email}
           type="email"
@@ -44,6 +70,7 @@ function Login({ handleLogin, handleRegister }) {
           Password: *{" "}
         </label>
         <input
+          id="email"
           name="password"
           value={loginData?.password}
           type="password"
@@ -51,10 +78,7 @@ function Login({ handleLogin, handleRegister }) {
           required
         />
       </div>
-      <button type="submit" onClick={handleSubmit}>
-        {" "}
-        Login
-      </button>
+      <button type="submit"> Login</button>
       <br />
       {error && <h5 style={{ color: "red" }}>{error}</h5>}
 
@@ -71,7 +95,7 @@ function Login({ handleLogin, handleRegister }) {
       >
         Don't have account create one
       </button>
-    </div>
+    </form>
   );
 }
 export default Login;
