@@ -11,6 +11,11 @@ function Signup({ handleLogin }) {
   });
 
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const handleUserInput = (e) => {
     const { name, value } = e.target;
@@ -24,19 +29,23 @@ function Signup({ handleLogin }) {
     if (error) {
       setError("");
     }
+    setSuccess(false);
   };
 
   const validateForm = () => {
     if (!signupData.firstname.trim()) {
-      return "First Name is required";
+      return "FirstName is required";
     }
 
     if (!signupData.lastname.trim()) {
-      return "Last Name is required";
+      return "LastName is required";
     }
 
     if (!signupData.email.trim()) {
       return "Email is required";
+    }
+    if (!emailRegex.test(signupData.email)) {
+      return "Invalid Email";
     }
 
     if (!signupData.phone.trim()) {
@@ -45,6 +54,9 @@ function Signup({ handleLogin }) {
 
     if (!signupData.password.trim()) {
       return "Password is required";
+    }
+    if (!passwordRegex.test(signupData.password)) {
+      return "Password should contain at least 8 characters includes one uppercase , one lowercase, one number and one special character";
     }
 
     return "";
@@ -64,11 +76,22 @@ function Signup({ handleLogin }) {
 
     // For practice only. Do not store real passwords in localStorage.
     localStorage.setItem("register", JSON.stringify(signupData));
-
-    handleLogin();
+    callingLoginScreen();
   };
 
-  return (
+  const callingLoginScreen = () => {
+    setSuccess(true);
+    setTimeout(() => {
+      handleLogin();
+    }, 1000);
+  };
+
+  return success ? (
+    <p>
+      Registration Successful: {signupData.firstname}{" "}
+      {signupData?.lastname}{" "}
+    </p>
+  ) : (
     <div className="mainwrapper">
       <h1>Create an Account</h1>
 
